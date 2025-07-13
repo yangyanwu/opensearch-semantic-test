@@ -1,5 +1,4 @@
 # 📧 Enron Email Indexing with OpenSearch & Gemini
-
 This project provides scripts to ingest and semantically index the Enron email dataset using OpenSearch with Google Gemini embeddings.
 
 ## 🚀 Quick Start
@@ -41,18 +40,33 @@ Access the OpenSearch dashboard at:
 
 ### Option 1: Raw Data Indexing
 ```bash
-python ingest_enron_1.py        # Basic indexing
-python ingest_enron_semantic_1.py  # Semantic indexing with message embeddings
+# Basic indexing (creates traditional search index)
+python ingest_enron_1.py
+
+# Enhanced semantic search (with full-message embeddings)
+python ingest_enron_semantic_1.py
 ```
 
 ### Option 2: Parsed Data Indexing
 ```bash
-python ingest_enron_2.py        # Basic indexing of parsed data
-python ingest_enron_semantic_2.py  # Semantic indexing with subject/body embeddings
+# Basic parsed data indexing
+python ingest_enron_2.py
+
+# Advanced semantic search (with separate subject/body embeddings)
+python ingest_enron_semantic_2.py
 ```
 
 ## Workflow Summary
-1. **Basic Indexing**: Stores raw email data
-2. **Semantic Indexing**: Creates vector embeddings for:
-   - Full message content (Option 1)
-   - Separate subject and body embeddings (Option 2)
+Choose either approach based on your search requirements:
+
+1. **Basic Indexing**
+   - Creates traditional search indexes
+   - Faster ingestion
+   - Good for exact-match queries
+
+2. **Semantic Indexing** (For AI-powered search):
+   - Generates vector embeddings for:
+     - Option 1: Complete email messages
+     - Option 2: Separate subject and body components
+   - Enables similarity-based searches
+   - Better for conceptual/contextual queries
