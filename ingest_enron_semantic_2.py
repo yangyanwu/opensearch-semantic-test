@@ -4,7 +4,6 @@ import time
 import csv
 import email
 from email.policy import default
-import pandas as pd
 
 INDEX_NAME = "enron-semantic-2"
 DIMENSION = 384  # For 'all-MiniLM-L6-v2'
@@ -94,8 +93,6 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         doc_count += 1
-        # if doc_count <= 257000:  # Skip first 1000 rows
-        #     continue
         try:
             doc = parse_enron_email(row['message'], row['file'])
         except Exception as e:
@@ -112,7 +109,7 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
                 "body_vector": body_vector,
             }
         })
-        time.sleep(0.02) # Throttle to avoid overwhelming the server
+        time.sleep(0.03) # Throttle to avoid overwhelming the server
         
         if len(actions) >= 1000:
             try:
@@ -133,72 +130,3 @@ if len(actions) >= 1:
 # Optional: wait for indexing to complete
 time.sleep(1)
 print("All documents indexed successfully.")
-
-# docs = [
-#     "Here is our forecast for Q2.",
-#     "Let’s schedule a call to review the budget.",
-#     "The meeting has been moved to Friday.",
-#     "We need to discuss the project timeline.",
-#     "I’m sharing the updated financial report.",
-# ]
-
-# actions = []
-
-# for i, doc in enumerate(docs):
-#     vector = model.encode(doc).tolist()
-#     actions.append({
-#         "_index": INDEX_NAME,
-#         "_id": i,
-#         "_source": {
-#             "message": doc,
-#             "message_vector": vector
-#         }
-#     })
-
-# helpers.bulk(client, actions)
-
-# # Optional: wait for indexing to complete
-# time.sleep(1)
-
-# # ----------- Step 4: Semantic Search ----------- #
-
-# query_text = "What’s our plan for the next quarter?"
-# query_vector = model.encode(query_text).tolist()
-
-# search_body = {
-#     "size": 3,
-#     "query": {
-#         "knn": {
-#             "message_vector": {
-#                 "vector": query_vector,
-#                 "k": 3
-#             }
-#         }
-#     }
-# }
-
-# results = client.search(index=INDEX_NAME, body=search_body)
-
-# print(f"\nTop matches for: \"{query_text}\"\n")
-# for hit in results["hits"]["hits"]:
-#     print(f"- {hit['_source']['message']} (score: {hit['_score']:.4f})")
-
-# messages = [hit["_source"]["message"] for hit in results["hits"]["hits"]]
-
-# # ----------- Summarize with Gemini ----------- #
-# prompt = "Summarize the following email messages:\n\n"
-# for i, msg in enumerate(messages, 1):
-#     prompt += f"{i}. {msg}\n"
-# prompt += "\nSummary:"
-
-# GEMINI_API_KEY="AIzaSyDX0Looo6O92Y5Rxo2AL1ce31D0_timBic"
-# genai.configure(api_key=GEMINI_API_KEY)
-# gemini_model = genai.GenerativeModel('gemini-2.5-flash')
-
-
-# response = gemini_model.generate_content({
-#     "text": prompt
-# })
-
-# print("\n🧠 Gemini Summary:")
-# print(response.text)

@@ -1,6 +1,10 @@
-Run the command in a terminal:
+## Run the command in a terminal:
+```
 $ podman compose --file docker-compose.yaml up --detach
+```
 
-Install dependencies:
-pip install opensearch-py sentence-transformers google-generativeai pandas
+## Install dependencies:
+```
+pip install opensearch-py sentence-transformers google-generativeai
+```
 
