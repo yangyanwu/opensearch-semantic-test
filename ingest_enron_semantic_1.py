@@ -71,7 +71,7 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         })
         time.sleep(0.03) # Throttle to avoid overwhelming the server
         
-        if len(actions) >= 10001:
+        if len(actions) >= 10000:
             try:
                 helpers.bulk(client, actions)
             except Exception as e:
