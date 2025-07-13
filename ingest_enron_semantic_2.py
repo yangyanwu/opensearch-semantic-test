@@ -4,6 +4,11 @@ import time
 import csv
 import email
 from email.policy import default
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("Starting Enron Semantic Ingestion...")
 
 INDEX_NAME = "enron-semantic-2"
 DIMENSION = 384  # For 'all-MiniLM-L6-v2'
@@ -96,10 +101,10 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         try:
             doc = parse_enron_email(row['message'], row['file'])
         except Exception as e:
-            print(f"Error parsing email: {e}")
+            logger.error(f"Error parsing email: {e}")
             continue
-        subject_vector = model.encode(doc['subject']).tolist()
-        body_vector = model.encode(doc['body']).tolist()
+        subject_vector = model.encode(doc['subject'], show_progress_bar = False).tolist()
+        body_vector = model.encode(doc['body'], show_progress_bar = False).tolist()
         actions.append({
             "_index": INDEX_NAME,
             "_id": doc['message-id'],
@@ -115,18 +120,18 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
             try:
                 helpers.bulk(client, actions)
             except Exception as e:
-                print(f"Error indexing batch: {e}")
+                logger.error(f"Error indexing batch: {e}")
             actions = []
-            print(f"Indexed {doc_count} documents...")
+            logger.info(f"Indexed {doc_count} documents...")
 
 if len(actions) >= 1:
     try:
         helpers.bulk(client, actions)
     except Exception as e:
-        print(f"Error indexing final batch: {e}")
+        logger.error(f"Error indexing final batch: {e}")
     actions = []
-    print(f"Indexed {doc_count} documents...")
+    logger.info(f"Indexed {doc_count} documents...")
 
 # Optional: wait for indexing to complete
 time.sleep(1)
-print("All documents indexed successfully.")
+logger.info("All documents indexed successfully.")

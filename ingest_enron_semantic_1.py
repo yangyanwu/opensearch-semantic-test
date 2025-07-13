@@ -2,6 +2,11 @@ from opensearchpy import OpenSearch, helpers
 from sentence_transformers import SentenceTransformer
 import time
 import csv
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("Starting Enron Semantic Ingestion...")
 
 INDEX_NAME = "enron-semantic-1"
 DIMENSION = 384  # For 'all-MiniLM-L6-v2'
@@ -60,7 +65,7 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         doc_count += 1
-        message_vector = model.encode(row['message']).tolist()
+        message_vector = model.encode(row['message'], show_progress_bar = False).tolist()
         actions.append({
             "_index": INDEX_NAME,
             "_source": {
@@ -75,18 +80,18 @@ with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
             try:
                 helpers.bulk(client, actions)
             except Exception as e:
-                print(f"Error indexing batch: {e}")
+                logger.error(f"Error indexing batch: {e}")
             actions = []
-            print(f"Indexed {doc_count} documents...")
+            logger.info(f"Indexed {doc_count} documents...")
 
 if len(actions) >= 1:
     try:
         helpers.bulk(client, actions)
     except Exception as e:
-        print(f"Error indexing final batch: {e}")
+        logger.error(f"Error indexing final batch: {e}")
     actions = []
-    print(f"Indexed {doc_count} documents...")
+    logger.info(f"Indexed {doc_count} documents...")
 
 # Optional: wait for indexing to complete
 time.sleep(1)
-print("All documents indexed successfully.")
+logger.info("All documents indexed successfully.")

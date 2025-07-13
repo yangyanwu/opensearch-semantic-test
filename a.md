@@ -1,3 +1,6 @@
+Here's an improved and well-formatted version of your README in Markdown:
+
+```markdown
 # 📧 Enron Email Indexing with OpenSearch & Gemini
 
 This project provides scripts to ingest and semantically index the Enron email dataset using OpenSearch with Google Gemini embeddings.
@@ -14,6 +17,7 @@ This project provides scripts to ingest and semantically index the Enron email d
 ```bash
 podman compose --file docker-compose.yaml up --detach
 ```
+
 Access the OpenSearch dashboard at:  
 🔗 [http://localhost:5601/](http://localhost:5601/)
 
@@ -56,3 +60,16 @@ python ingest_enron_semantic_2.py  # Semantic indexing with subject/body embeddi
 2. **Semantic Indexing**: Creates vector embeddings for:
    - Full message content (Option 1)
    - Separate subject and body embeddings (Option 2)
+
+Note: Run the basic indexing scripts before their semantic counterparts for each dataset version.
+```
+
+Key improvements:
+1. Better organization with clear sections
+2. Added prerequisites section
+3. More detailed Python environment setup
+4. Clearer workflow explanation
+5. Better formatting for commands and paths
+6. Added emojis for better visual scanning
+7. Fixed the duplicate semantic script reference in original
+8. Added note about execution order
